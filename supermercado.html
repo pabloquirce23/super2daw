@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+    Curso: 2DAW
+    Autor: Pablo Santos Quirce
+    Asignatura: Desarrollo Web en Entorno Cliente, Desarrollo de Interfaces Web, Despliegue de Aplicaciones Web
+    Descripcion: Supermercado.
+    Fecha: Diciembre de 2021
+  -->
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supermercado</title>
+</head>
+
+
+
+<style>
+.modo-dia {
+  background-image: url("https://www.am.com.mx/img/2020/08/06/profeco_3.jpg");
+  background-attachment: fixed;
+  background-size: cover;
+  color: black;
+  border-color: black;
+}
+
+.modo-noche {
+  background-color: #060725;
+  background-image: url("https://interactives.stuff.co.nz/2020/07/night-shift-essential-workers/supermarket-worker/assets/VeTiAK7Ehg/dwal2796-ls-2560x1499.jpeg");
+  background-attachment: fixed;
+  background-size: cover;
+  color: white;
+  border-color: white;
+}
+
+.caja_ocupado {
+    content: url("https://static.larioja.com/www/pre2017/multimedia/RC/201703/02/media/cortadas/mercadona-cajera-kMtF-U212511757933uXG-660x371@RC.JPG");
+}
+</style>
+
+
+
+<body id="contenedor-pagina">
+  <div class="introduccion_web">
+    <h3 class="texto_titulo">SUPERMERCADO</h3>
+    <div onclick="comenzarPrograma()" id="btn_comenzar" class="button">Comenzar</div>
+    <div onclick="guardarProgreso()" id="btn_guardar" class="invisible button">Guardar</div>
+    <div onclick="borrarProgreso()" id="btn_borrar" class="button invisible">Borrar</div>
+    <div onclick="cambiarTema()" id="btn_cambiar_tema" class="button">Tema</div>
+  </div>
+
+
+
+  <div class="zona_admin">
+    <div id="zonaadmin" class="invisible">
+      <div id="datos_cola">
+        Nueva persona en: <span id="tiempo_nueva_persona"></span>
+      </div>
+      <hr id="separador_linea" />
+      <form class="zona_admin_formulario" method="POST" onsubmit="return ejecutarNuevoComando(event)">
+        <label for="comando">Comando:</label>
+        <input required type="text" pattern="^Caja\s[1-4]\s[+-][1-4]$" name="comando" id="input_comando" />
+        <input type="submit" value="Ejecutar" id="btn_nuevo_comando" />
+      </form>
+      <div id="historial_comandos">Último comando: <span id="ultimo_comando"></span></div>
+    </div>
+  </div>
+
+
+
+  <div id="supermercado-contenedor">
+    <div id="zonacajas">
+      <div id="caja1" class="caja_contenedor">
+        <div class="caja_intro">
+          <p>CAJA 1</p>
+          <p id="caja1_estado" class="caja_estado_cerrado">Cerrado</p>
+        </div>
+        <div class="caja">
+          <div class="details">
+            <button id="btn_caja1_atender" class="btn_caja_atender invisible">Atender</button>
+            <div id="caja1_detalles_persona_atendido" class="invisible">
+              <div>
+                Personas en cola: <span id="num_personas_cola_caja1">0</span>
+              </div>
+              <div id="caja1_persona_atendido" class="invisible">
+                Persona: <span id="caja1_nombre_persona"></span>
+                <br />
+                Nº Productos: <span id="caja1_numero_productos"></span>
+                <br />
+                Tiempo: <span id="caja1_tiempo_restante"></span>s
+              </div>
+            </div>
+            <img src="https://2.bp.blogspot.com/-QvvC_6O-o0c/WbM-HCksuzI/AAAAAAAAEJ8/UndtySuHHA0HMyDB_ETdyV027Op7cu7TwCPcBGAYYCw/s640/cajera.jpg" class="img_caja invisible" id="img_caja1" width="265" height="170"
+              alt="" srcset="">
+          </div>
+        </div>
+      </div>
+
+
+      <div id="caja2" class="caja_contenedor">
+        <div class="caja_intro">
+          <p>CAJA 2</p>
+          <p id="caja2_estado" class="caja_estado_cerrado">Cerrado</p>
+        </div>
+        <div class="caja">
+          <div class="details">
+            <button id="btn_caja2_atender" class="btn_caja_atender invisible">Atender</button>
+            <div id="caja2_detalles_persona_atendido" class="invisible">
+              <div>
+                Personas en cola: <span id="num_personas_cola_caja2">0</span>
+              </div>
+              <div id="caja2_persona_atendido" class="invisible">
+                Persona: <span id="caja2_nombre_persona"></span>
+                <br />
+                Nº Productos: <span id="caja2_numero_productos"></span>
+                <br />
+                Tiempo: <span id="caja2_tiempo_restante"></span>s
+              </div>
+            </div>
+            <img src="https://2.bp.blogspot.com/-QvvC_6O-o0c/WbM-HCksuzI/AAAAAAAAEJ8/UndtySuHHA0HMyDB_ETdyV027Op7cu7TwCPcBGAYYCw/s640/cajera.jpg" class="img_caja invisible" id="img_caja2" width="265" height="170"
+              alt="" srcset="">
+          </div>
+        </div>
+      </div>
+
+
+      <div id="caja3" class="caja_contenedor">
+        <div class="caja_intro">
+          <p>CAJA 3</p>
+          <p id="caja3_estado" class="caja_estado_cerrado">Cerrado</p>
+        </div>
+        <div class="caja">
+          <div class="details">
+            <button id="btn_caja3_atender" class="btn_caja_atender invisible">Atender</button>
+            <div id="caja3_detalles_persona_atendido" class="invisible">
+              <div>
+                Personas en cola: <span id="num_personas_cola_caja3">0</span>
+              </div>
+              <div id="caja3_persona_atendido" class="invisible">
+                Persona: <span id="caja3_nombre_persona"></span>
+                <br />
+                Nº Productos: <span id="caja3_numero_productos"></span>
+                <br />
+                Tiempo: <span id="caja3_tiempo_restante"></span>s
+              </div>
+            </div>
+            <img src="https://2.bp.blogspot.com/-QvvC_6O-o0c/WbM-HCksuzI/AAAAAAAAEJ8/UndtySuHHA0HMyDB_ETdyV027Op7cu7TwCPcBGAYYCw/s640/cajera.jpg" class="img_caja invisible" id="img_caja3" width="265" height="170"
+              alt="" srcset="">
+          </div>
+        </div>
+      </div>
+
+
+      <div id="caja4" class="caja_contenedor">
+        <div class="caja_intro">
+          <p>CAJA 4</p>
+          <p id="caja4_estado" class="caja_estado_cerrado">Cerrado</p>
+        </div>
+        <div class="caja">
+          <div class="details">
+            <button id="btn_caja4_atender" class="btn_caja_atender invisible">Atender</button>
+            <div id="caja4_detalles_persona_atendido" class="invisible">
+              <div>
+                Personas en cola: <span id="num_personas_cola_caja4">0</span>
+              </div>
+              <div id="caja4_persona_atendido" class="invisible">
+                Persona: <span id="caja4_nombre_persona"></span>
+                <br />
+                Nº Productos: <span id="caja4_numero_productos"></span>
+                <br />
+                Tiempo: <span id="caja4_tiempo_restante"></span>s
+              </div>
+            </div>
+            <img src="https://2.bp.blogspot.com/-QvvC_6O-o0c/WbM-HCksuzI/AAAAAAAAEJ8/UndtySuHHA0HMyDB_ETdyV027Op7cu7TwCPcBGAYYCw/s640/cajera.jpg" class="img_caja invisible" id="img_caja4" width="265" height="170"
+              alt="" srcset="">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+
+    <script>
+        // Clase Caja
+class Caja {
+  constructor(id, abierto, ocupado = false, cola = [], tiempo = new Date()) {
+    this.id = id;
+    this.ocupado = ocupado;
+    this.abierto = abierto;
+    this.cola = cola;
+    this.tiempo = tiempo;
+  }
+
+  aniadirPersonaACola = () => {
+    this.cola.push(new Persona());
+  };
+
+  quitarPersonaDeCola = () => {
+    this.cola.shift();
+  };
+
+  //Setter y Getter
+  setOcupado = (ocupado) => {
+    this.ocupado = ocupado;
+  };
+
+  isOcupado = () => {
+    return this.ocupado;
+  };
+
+  setAbierto = (abierto) => {
+    this.abierto = abierto;
+  };
+
+  isAbierto = () => {
+    return this.abierto;
+  };
+
+  static fromJson(json) {
+    return new Caja(json.id, json.abierto, json.ocupado, json.cola);
+  }
+
+  //Asigna persona a caja
+  static asignarPersona(cajas) {
+    let cajasAbiertas = [];
+
+    cajas.forEach((caja) => {
+      if (caja.isAbierto()) {
+        cajasAbiertas.push(caja.id);
+      }
+    });
+
+    let index = Math.abs(Math.ceil(Math.random() * cajasAbiertas.length - 1));
+
+    cajas[cajasAbiertas[index] - 1].aniadirPersonaACola();
+    document.getElementById(
+      `num_personas_cola_caja${cajasAbiertas[index]}`
+    ).innerHTML = cajas[cajasAbiertas[index] - 1].cola.length;
+
+    if (cajas[cajasAbiertas[index] - 1].cola.length === 4) {
+      abrirModal(
+        `Acumulación de personas en caja ${cajas[cajasAbiertas[index] - 1].id}`,
+        `Hay mucha gente ${cajas[cajasAbiertas[index] - 1].id}. Habría que abrir más cajas`,
+        "https://i2.wp.com/ensegundos.do/wp-content/uploads/2020/04/super-lleno.jpg?fit=900%2C600&ssl=1"
+      );
+    }
+  }
+}
+
+
+
+// Clase persona
+class Persona {
+    constructor() {
+        let nombreClientes = [
+            "Owain",
+            "Inigo",
+            "Laurent",
+            "Gerome",
+            "Yarne",
+            "Lucina",
+            "Severa",
+            "Cynthia",
+            "Noire",
+            "Kjelle",
+        ];
+
+        this.nombre =
+            nombreClientes[
+            Math.abs(Math.ceil(Math.random() * nombreClientes.length - 1))
+            ];
+        this.nProductos = Math.floor(Math.random() * (10 - 1) + 1);
+    }
+}
+
+
+
+let cajas = cargarPrograma(); 
+let fechaConSumaSegundos = generarFechaConSumaSegundos(); 
+
+ //Funciones
+function generarFechaConSumaSegundos() {
+  const minTiempoCola = 10;
+  const maxTiempoCola = 30;
+
+  return (
+    new Date().getTime() +
+    (Math.floor(Math.random() * (maxTiempoCola - minTiempoCola) + 1) +
+      minTiempoCola) *
+      1000
+  );
+}
+
+function ejecutarNuevoComando(event) {
+  event.preventDefault();
+
+  let inputComando = document.getElementById("input_comando");
+  let nuevoComando = inputComando.value;
+
+  const nCaja = parseInt(nuevoComando.charAt(5));
+
+  if (cajas[nCaja - 1].isAbierto()) {
+    const operacion = nuevoComando.charAt(7); 
+    const nPersonas = parseInt(nuevoComando.charAt(8)); 
+
+    if (operacion === "+") {
+      for (let index = 0; index < nPersonas; index++) {
+        cajas[nCaja - 1].aniadirPersonaACola();
+      }
+
+      document.getElementById("ultimo_comando").innerText = nuevoComando;
+    } else {
+      if (cajas[nCaja - 1].cola.length >= nPersonas) {
+        for (let index = 0; index < nPersonas; index++) {
+          cajas[nCaja - 1].quitarPersonaDeCola();
+        }
+        document.getElementById("ultimo_comando").innerText = nuevoComando;
+      } else {
+        abrirModal(
+          "Número inválido",
+          "Error.",
+          "https://i.pinimg.com/originals/36/c7/df/36c7df0e95fd39649137f7b5dabb90c7.jpg"
+        );
+      }
+    }
+
+    document.getElementById(`num_personas_cola_caja${nCaja}`).innerHTML =
+      cajas[nCaja - 1].cola.length; 
+    document.getElementById("input_comando").value = "";
+  } else {
+    abrirModal(
+      "Caja cerrada",
+      "Error",
+      "https://i.pinimg.com/originals/36/c7/df/36c7df0e95fd39649137f7b5dabb90c7.jpg"
+    );
+  }
+}
+
+// Logica
+function initLogic() {
+  cajas.forEach((caja) => {
+    let divCaja = document.getElementById(`caja${caja.id}`);
+    let divDetallesPersonaAtendido = document.getElementById(
+      `caja${caja.id}_detalles_persona_atendido`
+    );
+    let btnCajaAtender = document.getElementById(`btn_caja${caja.id}_atender`);
+    document.getElementById(`num_personas_cola_caja${caja.id}`).innerText =
+      caja.cola.length;
+    let imgCaja = document.getElementById(`img_caja${caja.id}`);
+    let divCajaEstado = document.getElementById(`caja${caja.id}_estado`);
+
+    if (caja.isAbierto()) {
+      btnCajaAtender.classList.toggle("invisible");
+      divDetallesPersonaAtendido.classList.toggle("invisible");
+      imgCaja.classList.toggle("invisible");
+      divCajaEstado.innerText = "Abierto";
+      divCajaEstado.classList.toggle("caja_estado_cerrado");
+      divCajaEstado.classList.toggle("caja_estado_abierto");
+    }
+
+    btnCajaAtender.addEventListener("click", (event) => {
+      if (caja.cola.length > 0) {
+        btnCajaAtender.classList.toggle("invisible");
+        let divPersonaCajaAtendido = document.getElementById(
+          `caja${caja.id}_persona_atendido`
+        );
+        divPersonaCajaAtendido.classList.toggle("invisible");
+        imgCaja.classList.toggle("caja_ocupado");
+
+        caja.setOcupado(true); 
+        let personaAtendida = caja.cola[0]; 
+
+        document.getElementById(`caja${caja.id}_nombre_persona`).innerHTML =
+          personaAtendida.nombre;
+        document.getElementById(`caja${caja.id}_numero_productos`).innerHTML =
+          personaAtendida.nProductos;
+
+        const minTiempo = 1 * personaAtendida.nProductos;
+        const maxTiempo = 2 * personaAtendida.nProductos;
+        let tiempoAtender =
+          new Date().getTime() +
+          (Math.floor(Math.random() * (maxTiempo - minTiempo) + 1) +
+            minTiempo) *
+            1000;
+
+        const interval = setInterval(() => {
+          let fechaActual = new Date().getTime();
+          let tiempoRestante = tiempoAtender - fechaActual;
+          let segundosRestantes = Math.floor(tiempoRestante / 1000);
+
+          document.getElementById(`caja${caja.id}_tiempo_restante`).innerHTML =
+            segundosRestantes;
+
+          if (segundosRestantes < 0) {
+            caja.quitarPersonaDeCola();
+            caja.setOcupado(false);
+
+            btnCajaAtender.classList.toggle("invisible");
+            divPersonaCajaAtendido.classList.toggle("invisible");
+            imgCaja.classList.toggle("caja_ocupado");
+            document.getElementById(
+              `num_personas_cola_caja${caja.id}`
+            ).innerHTML = caja.cola.length;
+
+            clearInterval(interval);
+          }
+        }, 0);
+      } else {
+        abrirModal(
+          "Caja sin Clientes",
+          "No hay cola.",
+          "https://thumbs.dreamstime.com/b/lugar-de-trabajo-vac%C3%ADo-del-cajero-en-el-supermercado-dentro-un-centro-comercial-indonesia-bekasi-java-oeste-julio-152348095.jpg"
+        );
+      }
+    });
+
+    divCaja.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      if (!caja.isAbierto()) {
+        imgCaja.classList.toggle("invisible");
+        btnCajaAtender.classList.remove("invisible");
+        divDetallesPersonaAtendido.classList.remove("invisible");
+        divCajaEstado.innerText = "Abierto";
+        divCajaEstado.classList.toggle("caja_estado_cerrado");
+        divCajaEstado.classList.toggle("caja_estado_abierto");
+        caja.setAbierto(true);
+      }
+    });
+
+    divCaja.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+
+      if (caja.isAbierto() && !caja.isOcupado() && caja.cola.length === 0) {
+        imgCaja.classList.toggle("invisible");
+        btnCajaAtender.classList.toggle("invisible");
+        divDetallesPersonaAtendido.classList.toggle("invisible");
+        divCajaEstado.innerText = "Cerrado";
+        divCajaEstado.classList.toggle("caja_estado_cerrado");
+        divCajaEstado.classList.toggle("caja_estado_abierto");
+        caja.setAbierto(false);
+      }
+    });
+  });
+}
+
+function cargarPrograma() {
+  if (localStorage.getItem("supermercado") === null) {
+    return [
+      new Caja(1, true),
+      new Caja(2, false),
+      new Caja(3, false),
+      new Caja(4, false),
+    ];
+  }
+
+  let jsonCajas = JSON.parse(localStorage.getItem("supermercado"));
+  let cajasAux = [];
+
+  jsonCajas.forEach((caja) => {
+    cajasAux.push(Caja.fromJson(caja));
+  });
+
+  return cajasAux;
+}
+
+function comenzarPrograma() {
+  document.getElementById("btn_comenzar").classList.toggle("invisible");
+  document.getElementById("btn_guardar").classList.toggle("invisible");
+  document.getElementById("btn_borrar").classList.toggle("invisible");
+  document.getElementById("zonaadmin").classList.toggle("invisible");
+  initLogic();
+  generarNuevaPersona();
+}
+
+function guardarProgreso() {
+  let cajasOcupado = false;
+
+  cajas.forEach((caja) => {
+    if (caja.isOcupado()) {
+      cajasOcupado = true;
+      return;
+    }
+  });
+
+  if (!cajasOcupado) {
+    localStorage.setItem("supermercado", JSON.stringify(cajas));
+    abrirModal(
+      "Progreso guardado",
+      "http://soyneurotico.com/wp-content/uploads/2011/03/soy-neurotico-guardar-vida.jpg"
+    );
+  } else {
+    alert(
+      "Todas las cajas tienen que estar libres"
+    );
+  }
+}
+
+function temporizador() {
+  let fechaActual = new Date().getTime();
+  let fechaRestante = fechaConSumaSegundos - fechaActual;
+  let segundosRestantes = Math.floor(fechaRestante / 1000);
+
+  let spanSegundos = document.getElementById("tiempo_nueva_persona");
+  spanSegundos.innerHTML = `${segundosRestantes} segundos`;
+
+  if (fechaRestante < 1) {
+    Caja.asignarPersona(cajas);
+    generarNuevaPersona();
+  }
+}
+
+function generarNuevaPersona() {
+  fechaConSumaSegundos = generarFechaConSumaSegundos();
+  setInterval(temporizador, 0);
+}
+
+function abrirModal(tituloModal, mensajeModal, modalGif) {
+  document.getElementById("modal_titulo_texto").innerText = tituloModal;
+  document.getElementById("modal_mensaje_texto").innerText = mensajeModal;
+  document.getElementById("modal_gif").src = modalGif;
+  document.getElementById("modal_mensaje").style.display = "block";
+}
+
+function cerrarModal() {
+  document.getElementById("modal_mensaje").style.display = "none";
+}
+
+function borrarProgreso() {
+  localStorage.removeItem("supermercado");
+  window.location.reload();
+}
+
+temaInicial();
+
+
+//Modo dia/noche
+
+function cambiarTema() {
+  document.getElementById("contenedor-pagina").style = "all 200ms";
+  document.getElementById("contenedor-pagina").classList.toggle("modo-noche");
+  document.getElementById("contenedor-pagina").classList.toggle("modo-dia");
+  localStorage.setItem(
+    "modo-noche",
+    document
+      .getElementById("contenedor-pagina")
+      .classList.contains("modo-noche")
+  );
+}
+
+function temaInicial() {
+  if (
+    localStorage.getItem("modo-noche") &&
+    localStorage.getItem("modo-noche") == "true"
+  ) {
+    document.getElementById("contenedor-pagina").style = "none";
+    document.getElementById("contenedor-pagina").classList.toggle("modo-noche");
+  } else {
+    document.getElementById("contenedor-pagina").classList.toggle("modo-dia");
+  }
+}
+    </script>
+</body>
+
+</html>
